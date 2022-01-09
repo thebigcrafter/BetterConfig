@@ -1,0 +1,24 @@
+{
+    "name": "kygekteam/betterconfig",
+    "description": "A better YAML configuration file management virion for PocketMine-MP 4",
+    "type": "library",
+    "require": {
+        "php": "^8.0",
+        "php-64bit": "*",
+        "ext-yaml": ">=2.0.0",
+        "consolidation/comments": "^1.0",
+        "symfony/yaml": "^6.0"
+    },
+    "license": "GPL-3.0",
+    "autoload": {
+        "psr-4": {
+            "KygekTeam\\BetterConfig\\": "src/KygekTeam/BetterConfig/"
+        }
+    },
+    "authors": [
+        {
+            "name": "KygekDev",
+            "email": "68368066+KygekDev@users.noreply.github.com"
+        }
+    ]
+}
