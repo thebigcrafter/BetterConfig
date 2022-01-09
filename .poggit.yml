@@ -8,5 +8,5 @@ projects:
     model: virion
     type: library
     includeDirs:
-      "vendor/": "="
+      vendor: vendor
 ...
