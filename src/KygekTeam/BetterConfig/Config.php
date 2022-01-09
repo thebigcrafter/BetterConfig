@@ -16,6 +16,7 @@ namespace KygekTeam\BetterConfig;
 
 require_once __DIR__ . "/../../../vendor/autoload.php";
 
+use Exception;
 use Symfony\Component\Yaml\Exception\ParseException;
 use Symfony\Component\Yaml\Yaml;
 
@@ -41,7 +42,7 @@ class Config {
         if (!$cached) {
             $this->reload();
         }
-        return $this->contentsCache[$key];
+        return $this->contentsCache[$key] ?? null;
     }
 
     public function getAll(bool $cached = true) : array {
@@ -68,23 +69,31 @@ class Config {
         }
     }
 
-    public function update() {
-        $this->save();
-        $this->reload();
+    public function update() : bool {
+        if ($this->save() && $this->reload()) {
+            return true;
+        }
+        return false;
     }
 
-    public function save() {
-        file_put_contents($this->path, Yaml::dump($this->contentsCache, 2, 2, Yaml::DUMP_MULTI_LINE_LITERAL_BLOCK));
-        $this->changed = false;
+    public function save() : bool {
+        try {
+            file_put_contents($this->path, Yaml::dump($this->contentsCache, 2, 2, Yaml::DUMP_MULTI_LINE_LITERAL_BLOCK));
+            $this->changed = false;
+            return true;
+        } catch (Exception $e) {
+            return false;
+        }
     }
 
-    public function reload() {
+    public function reload() : bool {
         try {
             $this->contentsCache = Yaml::parseFile($this->path, Yaml::DUMP_EXCEPTION_ON_INVALID_TYPE);
+            return true;
         } catch (ParseException $e) {
             $this->contentsCache = [];
+            return false;
         }
-
     }
 
     public function hasChanged() : bool {
