@@ -14,7 +14,7 @@ declare(strict_types=1);
 
 namespace KygekTeam\BetterConfig;
 
-require_once __DIR__ . "/../../../vendor/autoload.php";
+require_once __DIR__ . "/libs/autoload.php";
 
 use Exception;
 use Symfony\Component\Yaml\Exception\ParseException;

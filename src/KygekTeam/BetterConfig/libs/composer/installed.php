@@ -1,11 +1,11 @@
 <?php return array(
     'root' => array(
-        'pretty_version' => '1.0.0+no-version-set',
-        'version' => '1.0.0.0',
+        'pretty_version' => 'dev-main',
+        'version' => 'dev-main',
         'type' => 'library',
-        'install_path' => __DIR__ . '/../../',
+        'install_path' => __DIR__ . '/../../../../../',
         'aliases' => array(),
-        'reference' => NULL,
+        'reference' => '8a22b974ff164c3dfdd54cd0c03cd7cf5b2defdf',
         'name' => 'kygekteam/betterconfig',
         'dev' => true,
     ),
@@ -20,12 +20,12 @@
             'dev_requirement' => false,
         ),
         'kygekteam/betterconfig' => array(
-            'pretty_version' => '1.0.0+no-version-set',
-            'version' => '1.0.0.0',
+            'pretty_version' => 'dev-main',
+            'version' => 'dev-main',
             'type' => 'library',
-            'install_path' => __DIR__ . '/../../',
+            'install_path' => __DIR__ . '/../../../../../',
             'aliases' => array(),
-            'reference' => NULL,
+            'reference' => '8a22b974ff164c3dfdd54cd0c03cd7cf5b2defdf',
             'dev_requirement' => false,
         ),
         'symfony/polyfill-ctype' => array(

@@ -20,5 +20,8 @@
             "name": "KygekDev",
             "email": "68368066+KygekDev@users.noreply.github.com"
         }
-    ]
+    ],
+    "config": {
+        "vendor-dir": "src/KygekTeam/BetterConfig/libs"
+    }
 }
