@@ -5,7 +5,7 @@
         'type' => 'library',
         'install_path' => __DIR__ . '/../../../../../',
         'aliases' => array(),
-        'reference' => '8a22b974ff164c3dfdd54cd0c03cd7cf5b2defdf',
+        'reference' => 'fa3fabec9d33050a8d8b4c4c81ae085f9be96e01',
         'name' => 'kygekteam/betterconfig',
         'dev' => true,
     ),
@@ -25,7 +25,7 @@
             'type' => 'library',
             'install_path' => __DIR__ . '/../../../../../',
             'aliases' => array(),
-            'reference' => '8a22b974ff164c3dfdd54cd0c03cd7cf5b2defdf',
+            'reference' => 'fa3fabec9d33050a8d8b4c4c81ae085f9be96e01',
             'dev_requirement' => false,
         ),
         'symfony/polyfill-ctype' => array(

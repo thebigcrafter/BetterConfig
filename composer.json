@@ -2,10 +2,11 @@
     "name": "kygekteam/betterconfig",
     "description": "A better YAML configuration file management virion for PocketMine-MP 4",
     "type": "library",
+    "homepage": "https://poggit.pmmp.io/ci/KygekTeam/BetterConfig/~",
+    "keywords": ["yaml", "poggit", "virion", "pmmp-virion", "pm4", "betterconfig"],
     "require": {
         "php": "^8.0",
         "php-64bit": "*",
-        "ext-yaml": ">=2.0.0",
         "consolidation/comments": "^1.0",
         "symfony/yaml": "^6.0"
     },
@@ -18,7 +19,8 @@
     "authors": [
         {
             "name": "KygekDev",
-            "email": "68368066+KygekDev@users.noreply.github.com"
+            "email": "68368066+KygekDev@users.noreply.github.com",
+            "homepage": "https://kygekdev.github.io"
         }
     ],
     "config": {
