@@ -24,11 +24,11 @@ class Config {
 
     public const VERSION = "1.0.0-BETA";
 
-    private bool $changed = false;
+    protected bool $changed = false;
 
     public function __construct(
-        private string $path,
-        private array $contentsCache = [],
+        protected string $path,
+        protected array $contentsCache = [],
     ) {
         // Create configuration file
         $this->save();
@@ -52,28 +52,43 @@ class Config {
         return $this->contentsCache;
     }
 
-    public function set(array $contents, bool $update = false) {
+    public function set(array $contents, bool $update = false) : bool {
         // Merge arrays
         $this->contentsCache = $contents + $this->contentsCache;
         $this->changed = true;
         if ($update) {
-            $this->update();
+            return $this->update();
         }
+        return true;
     }
 
-    public function setAll(array $contents, bool $update = false) {
+    public function setAll(array $contents, bool $update = false) : bool {
         $this->contentsCache = $contents;
         $this->changed = true;
         if ($update) {
-            $this->update();
+            return $this->update();
         }
+        return true;
+    }
+
+    public function remove(string $key, bool $update = false) : bool {
+        if (!isset($this->contentsCache[$key])) {
+            return false;
+        }
+        unset($this->contentsCache[$key]);
+        $this->changed = true;
+        if ($update) {
+            return $this->update();
+        }
+        return true;
+    }
+
+    public function removeAll(bool $update = false) : bool {
+        return $this->setAll([], $update);
     }
 
     public function update() : bool {
-        if ($this->save() && $this->reload()) {
-            return true;
-        }
-        return false;
+        return $this->save() && $this->reload();
     }
 
     public function save() : bool {
