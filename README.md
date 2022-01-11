@@ -8,12 +8,16 @@ A better YAML configuration file management virion for PocketMine-MP 4.
 
 ## ✅ Tasks
 
+- [ ] Minify Composer libraries script
+- [ ] Test virion & fix bugs and issues
+- [ ] Asynchronous file reading & writing
 - [ ] Preserve YAML comments (using [consolidation/comments](https://packagist.org/packages/consolidation/comments))
 - [ ] PHPDoc
 - [ ] API documentations & examples
 - [ ] Example/testing plugin
 - [ ] Better README
 - [ ] Release 1.0.0 🙂
+- [ ] Composer library support (probably in version 1.1.0)
 
 And many more...
 
