@@ -142,7 +142,7 @@ class Config {
         return $this->checkUpdate($update);
     }
 
-    public function removeAll(bool $update = false) : bool {
+    public function removeAll(bool $update = null) : bool {
         return $this->setAll([], $update);
     }
 
