@@ -45,7 +45,7 @@ class Config {
         return $this->contentsCache[$key] ?? $default;
     }
 
-    public function getNested(string $key, string $separator = ".", mixed $default = null, bool $cached = true) : mixed {
+    public function getNested(string $key, mixed $default = null, string $separator = ".", bool $cached = true) : mixed {
         if (!$cached) {
             $this->reload();
         }
