@@ -24,3 +24,7 @@ And many more...
 ## ❔ Support
 
 Please join the official [KygekTeam Discord server](https://discord.gg/CXtqUZv) for support from our staff(s).
+
+## 📝 Credits
+
+Thanks to GitHub Copilot for helping me to make this virion!

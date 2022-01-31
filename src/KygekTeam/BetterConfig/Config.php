@@ -38,11 +38,41 @@ class Config {
         return $this->path;
     }
 
-    public function get(string $key, bool $cached = true) : mixed {
+    public function get(string $key, mixed $default = null, bool $cached = true) : mixed {
         if (!$cached) {
             $this->reload();
         }
-        return $this->contentsCache[$key] ?? null;
+        return $this->contentsCache[$key] ?? $default;
+    }
+
+    public function getNested(string $key, string $separator = ".", mixed $default = null, bool $cached = true) : mixed {
+        if (!$cached) {
+            $this->reload();
+        }
+        $keys = explode($separator, $key);
+        $contents = $this->contentsCache;
+        foreach ($keys as $key) {
+            if (!isset($contents[$key])) {
+                return $default;
+            }
+            $contents = $contents[$key];
+        }
+        return $contents;
+    }
+
+    public function getContents(array $keys, mixed $default = null, bool $cached = true) : array {
+        if (!$cached) {
+            $this->reload();
+        }
+        $result = [];
+        foreach ($keys as $key) {
+            if (is_array($key)) {
+                $result = array_merge($result, $this->getContents($key, $default, $cached));
+            } else {
+                $result[$key] = $this->contentsCache[$key] ?? $default;
+            }
+        }
+        return $result;
     }
 
     public function getAll(bool $cached = true) : array {
@@ -52,9 +82,35 @@ class Config {
         return $this->contentsCache;
     }
 
-    public function set(array $contents, bool $update = false) : bool {
+    public function set(string $key, mixed $value, bool $update = false) : bool {
+        $this->contentsCache[$key] = $value;
+        $this->changed = true;
+        if ($update) {
+            return $this->update();
+        }
+        return true;
+    }
+
+    public function setNested(string $key, mixed $value, string $separator = ".", bool $update = false) : bool {
+        $keys = explode($separator, $key);
+        $contents = &$this->contentsCache;
+        foreach ($keys as $key) {
+            if (!isset($contents[$key])) {
+                $contents[$key] = [];
+            }
+            $contents = &$contents[$key];
+        }
+        $contents = $value;
+        $this->changed = true;
+        if ($update) {
+            return $this->update();
+        }
+        return true;
+    }
+
+    public function setContents(array $contents, bool $update = false) : bool {
         // Merge arrays
-        $this->contentsCache = $contents + $this->contentsCache;
+        $this->contentsCache = array_replace_recursive($this->contentsCache, $contents);
         $this->changed = true;
         if ($update) {
             return $this->update();
@@ -76,6 +132,37 @@ class Config {
             return false;
         }
         unset($this->contentsCache[$key]);
+        $this->changed = true;
+        if ($update) {
+            return $this->update();
+        }
+        return true;
+    }
+
+    public function removeNested(string $key, string $separator = ".", bool $update = false) : bool {
+        $keys = explode($separator, $key);
+        $contents = &$this->contentsCache;
+        $unset = true;
+        foreach ($keys as $key) {
+            if (!isset($contents[$key])) {
+                $unset = false;
+                break;
+            }
+            $contents = &$contents[$key];
+        }
+        // Prevents accidental removal of the whole array
+        if ($unset) unset($contents);
+        $this->changed = true;
+        if ($update) {
+            return $this->update();
+        }
+        return true;
+    }
+
+    public function removeContents(array $keys, bool $update = false) : bool {
+        foreach ($keys as $key) {
+            unset($this->contentsCache[$key]);
+        }
         $this->changed = true;
         if ($update) {
             return $this->update();
