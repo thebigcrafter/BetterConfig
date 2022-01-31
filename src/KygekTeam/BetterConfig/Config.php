@@ -29,6 +29,7 @@ class Config {
     public function __construct(
         protected string $path,
         protected array $contentsCache = [],
+        protected bool $alwaysUpdate = false,
     ) {
         // Create configuration file
         $this->save();
@@ -38,17 +39,13 @@ class Config {
         return $this->path;
     }
 
-    public function get(string $key, mixed $default = null, bool $cached = true) : mixed {
-        if (!$cached) {
-            $this->reload();
-        }
+    public function get(string $key, mixed $default = null, bool $cached = null) : mixed {
+        $this->checkCached($cached);
         return $this->contentsCache[$key] ?? $default;
     }
 
-    public function getNested(string $key, mixed $default = null, string $separator = ".", bool $cached = true) : mixed {
-        if (!$cached) {
-            $this->reload();
-        }
+    public function getNested(string $key, mixed $default = null, string $separator = ".", bool $cached = null) : mixed {
+        $this->checkCached($cached);
         $keys = explode($separator, $key);
         $contents = $this->contentsCache;
         foreach ($keys as $key) {
@@ -60,10 +57,8 @@ class Config {
         return $contents;
     }
 
-    public function getContents(array $keys, mixed $default = null, bool $cached = true) : array {
-        if (!$cached) {
-            $this->reload();
-        }
+    public function getContents(array $keys, mixed $default = null, bool $cached = null) : array {
+        $this->checkCached($cached);
         $result = [];
         foreach ($keys as $key) {
             if (is_array($key)) {
@@ -75,23 +70,18 @@ class Config {
         return $result;
     }
 
-    public function getAll(bool $cached = true) : array {
-        if (!$cached) {
-            $this->reload();
-        }
+    public function getAll(bool $cached = null) : array {
+        $this->checkCached($cached);
         return $this->contentsCache;
     }
 
-    public function set(string $key, mixed $value, bool $update = false) : bool {
+    public function set(string $key, mixed $value, bool $update = null) : bool {
         $this->contentsCache[$key] = $value;
         $this->changed = true;
-        if ($update) {
-            return $this->update();
-        }
-        return true;
+        return $this->checkUpdate($update);
     }
 
-    public function setNested(string $key, mixed $value, string $separator = ".", bool $update = false) : bool {
+    public function setNested(string $key, mixed $value, string $separator = ".", bool $update = null) : bool {
         $keys = explode($separator, $key);
         $contents = &$this->contentsCache;
         foreach ($keys as $key) {
@@ -102,44 +92,32 @@ class Config {
         }
         $contents = $value;
         $this->changed = true;
-        if ($update) {
-            return $this->update();
-        }
-        return true;
+        return $this->checkUpdate($update);
     }
 
-    public function setContents(array $contents, bool $update = false) : bool {
+    public function setContents(array $contents, bool $update = null) : bool {
         // Merge arrays
         $this->contentsCache = array_replace_recursive($this->contentsCache, $contents);
         $this->changed = true;
-        if ($update) {
-            return $this->update();
-        }
-        return true;
+        return $this->checkUpdate($update);
     }
 
-    public function setAll(array $contents, bool $update = false) : bool {
+    public function setAll(array $contents, bool $update = null) : bool {
         $this->contentsCache = $contents;
         $this->changed = true;
-        if ($update) {
-            return $this->update();
-        }
-        return true;
+        return $this->checkUpdate($update);
     }
 
-    public function remove(string $key, bool $update = false) : bool {
+    public function remove(string $key, bool $update = null) : bool {
         if (!isset($this->contentsCache[$key])) {
             return false;
         }
         unset($this->contentsCache[$key]);
         $this->changed = true;
-        if ($update) {
-            return $this->update();
-        }
-        return true;
+        return $this->checkUpdate($update);
     }
 
-    public function removeNested(string $key, string $separator = ".", bool $update = false) : bool {
+    public function removeNested(string $key, string $separator = ".", bool $update = null) : bool {
         $keys = explode($separator, $key);
         $contents = &$this->contentsCache;
         $unset = true;
@@ -153,21 +131,15 @@ class Config {
         // Prevents accidental removal of the whole array
         if ($unset) unset($contents);
         $this->changed = true;
-        if ($update) {
-            return $this->update();
-        }
-        return true;
+        return $this->checkUpdate($update);
     }
 
-    public function removeContents(array $keys, bool $update = false) : bool {
+    public function removeContents(array $keys, bool $update = null) : bool {
         foreach ($keys as $key) {
             unset($this->contentsCache[$key]);
         }
         $this->changed = true;
-        if ($update) {
-            return $this->update();
-        }
-        return true;
+        return $this->checkUpdate($update);
     }
 
     public function removeAll(bool $update = false) : bool {
@@ -200,6 +172,33 @@ class Config {
 
     public function hasChanged() : bool {
         return $this->changed;
+    }
+
+    public function isAlwaysUpdated() : bool {
+        return $this->alwaysUpdate;
+    }
+
+    public function setAlwaysUpdate(bool $alwaysUpdate) {
+        $this->alwaysUpdate = $alwaysUpdate;
+    }
+
+    protected function checkCached(?bool $cached) {
+        if ($cached === null) {
+            $cached = !$this->isAlwaysUpdated();
+        }
+        if (!$cached) {
+            $this->reload();
+        }
+    }
+
+    protected function checkUpdate(?bool $update) : bool {
+        if ($update === null) {
+            $update = $this->isAlwaysUpdated();
+        }
+        if ($update) {
+            return $this->update();
+        }
+        return true;
     }
 
 }
