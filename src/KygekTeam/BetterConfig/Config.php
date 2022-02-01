@@ -29,7 +29,8 @@ class Config {
     public function __construct(
         protected string $path,
         protected array $contentsCache = [],
-        protected bool $alwaysUpdate = false,
+        protected string $nestedSeparator = ".",
+        protected bool $alwaysUpdated = false,
     ) {
         // Create configuration file
         $this->save();
@@ -39,14 +40,18 @@ class Config {
         return $this->path;
     }
 
+    public function setPath(string $path) {
+        $this->path = $path;
+    }
+
     public function get(string $key, mixed $default = null, bool $cached = null) : mixed {
         $this->checkCached($cached);
         return $this->contentsCache[$key] ?? $default;
     }
 
-    public function getNested(string $key, mixed $default = null, string $separator = ".", bool $cached = null) : mixed {
+    public function getNested(string $key, mixed $default = null, string $separator = null, bool $cached = null) : mixed {
         $this->checkCached($cached);
-        $keys = explode($separator, $key);
+        $keys = explode($separator ?? $this->getNestedSeparator(), $key);
         $contents = $this->contentsCache;
         foreach ($keys as $key) {
             if (!isset($contents[$key])) {
@@ -81,8 +86,8 @@ class Config {
         return $this->checkUpdate($update);
     }
 
-    public function setNested(string $key, mixed $value, string $separator = ".", bool $update = null) : bool {
-        $keys = explode($separator, $key);
+    public function setNested(string $key, mixed $value, string $separator = null, bool $update = null) : bool {
+        $keys = explode($separator ?? $this->getNestedSeparator(), $key);
         $contents = &$this->contentsCache;
         foreach ($keys as $key) {
             if (!isset($contents[$key])) {
@@ -117,8 +122,8 @@ class Config {
         return $this->checkUpdate($update);
     }
 
-    public function removeNested(string $key, string $separator = ".", bool $update = null) : bool {
-        $keys = explode($separator, $key);
+    public function removeNested(string $key, string $separator = null, bool $update = null) : bool {
+        $keys = explode($separator ?? $this->getNestedSeparator(), $key);
         $contents = &$this->contentsCache;
         $unset = true;
         foreach ($keys as $key) {
@@ -155,9 +160,9 @@ class Config {
         return isset($this->contentsCache[$key]);
     }
 
-    public function existsNested(string $key, string $separator = ".", bool $cached = null) : bool {
+    public function existsNested(string $key, string $separator = null, bool $cached = null) : bool {
         $this->checkCached($cached);
-        $keys = explode($separator, $key);
+        $keys = explode($separator ?? $this->getNestedSeparator(), $key);
         $contents = $this->contentsCache;
         foreach ($keys as $key) {
             if (!isset($contents[$key])) {
@@ -213,28 +218,30 @@ class Config {
         return $this->changed;
     }
 
-    public function isAlwaysUpdated() : bool {
-        return $this->alwaysUpdate;
+    public function getNestedSeparator() : string {
+        return $this->nestedSeparator;
     }
 
-    public function setAlwaysUpdate(bool $alwaysUpdate) {
-        $this->alwaysUpdate = $alwaysUpdate;
+    public function setNestedSeparator(string $nestedSeparator) {
+        $this->nestedSeparator = $nestedSeparator;
+    }
+
+    public function isAlwaysUpdated() : bool {
+        return $this->alwaysUpdated;
+    }
+
+    public function setAlwaysUpdated(bool $alwaysUpdated) {
+        $this->alwaysUpdated = $alwaysUpdated;
     }
 
     protected function checkCached(?bool $cached) {
-        if ($cached === null) {
-            $cached = !$this->isAlwaysUpdated();
-        }
-        if (!$cached) {
+        if (!($cached ?? !$this->isAlwaysUpdated())) {
             $this->reload();
         }
     }
 
     protected function checkUpdate(?bool $update) : bool {
-        if ($update === null) {
-            $update = $this->isAlwaysUpdated();
-        }
-        if ($update) {
+        if ($update ?? $this->isAlwaysUpdated()) {
             return $this->update();
         }
         return true;
