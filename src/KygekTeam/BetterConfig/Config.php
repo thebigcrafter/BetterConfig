@@ -186,7 +186,8 @@ class Config {
         return $result;
     }
 
-    public function isEmpty() : bool {
+    public function isEmpty(bool $cached = null) : bool {
+        $this->checkCached($cached);
         return empty($this->contentsCache);
     }
 
