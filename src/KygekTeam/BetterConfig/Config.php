@@ -136,7 +136,11 @@ class Config {
 
     public function removeContents(array $keys, bool $update = null) : bool {
         foreach ($keys as $key) {
-            unset($this->contentsCache[$key]);
+            if (is_array($key)) {
+                $this->removeContents($key, $update);
+            } else {
+                unset($this->contentsCache[$key]);
+            }
         }
         $this->changed = true;
         return $this->checkUpdate($update);
@@ -144,6 +148,41 @@ class Config {
 
     public function removeAll(bool $update = null) : bool {
         return $this->setAll([], $update);
+    }
+
+    public function exists(string $key, bool $cached = null) : bool {
+        $this->checkCached($cached);
+        return isset($this->contentsCache[$key]);
+    }
+
+    public function existsNested(string $key, string $separator = ".", bool $cached = null) : bool {
+        $this->checkCached($cached);
+        $keys = explode($separator, $key);
+        $contents = $this->contentsCache;
+        foreach ($keys as $key) {
+            if (!isset($contents[$key])) {
+                return false;
+            }
+            $contents = $contents[$key];
+        }
+        return true;
+    }
+
+    public function existsContents(array $keys, bool $cached = null) : array {
+        $this->checkCached($cached);
+        $result = [];
+        foreach ($keys as $key) {
+            if (is_array($key)) {
+                $result = array_merge($result, $this->existsContents($key, $cached));
+            } else {
+                $result[$key] = isset($this->contentsCache[$key]);
+            }
+        }
+        return $result;
+    }
+
+    public function isEmpty() : bool {
+        return empty($this->contentsCache);
     }
 
     public function update() : bool {
