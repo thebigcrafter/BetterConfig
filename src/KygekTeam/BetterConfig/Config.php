@@ -68,7 +68,7 @@ class Config {
     }
 
     /**
-     * @param array<mixed> $keys
+     * @param array<array-key, mixed> $keys
      * @return array<int|string, mixed>
      */
     public function getContents(array $keys, mixed $default = null, ?bool $cached = null) : array {
@@ -77,7 +77,7 @@ class Config {
         foreach ($keys as $key) {
             if (is_array($key)) {
                 $result = array_merge($result, $this->getContents($key, $default, $cached));
-            } else {
+            } elseif (is_int($key) || is_string($key)) {
                 $result[$key] = $this->contentsCache[$key] ?? $default;
             }
         }
@@ -151,12 +151,12 @@ class Config {
         return $this->checkUpdate($update);
     }
 
-    /** @param array<mixed> $keys */
+    /** @param array<array-key, mixed> $keys */
     public function removeContents(array $keys, ?bool $update = null) : bool {
         foreach ($keys as $key) {
             if (is_array($key)) {
                 $this->removeContents($key, $update);
-            } else {
+            } elseif (is_int($key) || is_string($key)) {
                 unset($this->contentsCache[$key]);
             }
         }
@@ -187,7 +187,7 @@ class Config {
     }
 
     /**
-     * @param array<mixed> $keys
+     * @param array<array-key, mixed> $keys
      * @return array<int|string, bool>
      */
     public function existsContents(array $keys, ?bool $cached = null) : array {
@@ -196,7 +196,7 @@ class Config {
         foreach ($keys as $key) {
             if (is_array($key)) {
                 $result = array_merge($result, $this->existsContents($key, $cached));
-            } else {
+            } elseif (is_int($key) || is_string($key)) {
                 $result[$key] = isset($this->contentsCache[$key]);
             }
         }
