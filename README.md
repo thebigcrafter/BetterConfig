@@ -1,30 +1,48 @@
 # BetterConfig
 
-> **WARNING:** This virion is under development and haven't been tested. **Do not use this virion unless you know what you're doing.** Contributions such as feature requests, bug reports and pull requests are welcomed though.
+BetterConfig is a PHP library packaged as a PocketMine-MP Virion for reading and writing YAML configuration data. The current manifest targets PocketMine-MP Virion API 4 and PHP 8.0; it is not an API 5 plugin and does not provide a standalone server command or PHAR.
 
----
+> BetterConfig is still under development and has not been validated as a production-ready configuration layer. Review the current source and test it in a disposable consumer plugin before using it for live server data.
 
-A better YAML configuration file management virion for PocketMine-MP 4.
+## Current API
 
-## ✅ Tasks
+The public class is `KygekTeam\BetterConfig\Config`. It stores an array cache and exposes helpers for:
 
-- [ ] Minify Composer libraries script
-- [ ] Test virion & fix bugs and issues
-- [ ] Asynchronous file reading & writing
-- [ ] Preserve YAML comments (using [consolidation/comments](https://packagist.org/packages/consolidation/comments))
-- [ ] PHPDoc
-- [ ] API documentations & examples
-- [ ] Example/testing plugin
-- [ ] Better README
-- [ ] Release 1.0.0 🙂
-- [ ] Composer library support (probably in version 1.1.0)
+- Reading top-level keys with `get()` and nested keys with `getNested()`.
+- Reading the complete cache with `getAll()` or selected keys with `getContents()`.
+- Writing values with `set()`, `setNested()`, `setContents()` and `setAll()`.
+- Removing values with `remove()`, `removeNested()`, `removeContents()` and `removeAll()`.
+- Checking keys with `exists()`, `existsNested()`, `existsContents()` and `isEmpty()`.
+- Saving/reloading YAML through `save()`, `reload()` and `update()`.
+- Controlling the nested-key separator and whether reads/writes refresh the file through `setNestedSeparator()` and `setAlwaysUpdated()`.
 
-And many more...
+The constructor accepts a file path, an optional initial cache, a nested-key separator (default `.`), and an `alwaysUpdated` flag. The implementation uses its bundled Composer autoloader and Symfony YAML classes under the configured library path.
 
-## ❔ Support
+## Compatibility and integration
 
-Please join the official [KygekTeam Discord server](https://discord.gg/CXtqUZv) for support from our staff(s).
+BetterConfig is intended to be embedded into a PocketMine-MP plugin through the Virion build process. The compatibility contract is the one declared in `composer.json` and `virion.yml`:
 
-## 📝 Credits
+- PHP 8.0 or newer within the declared package constraints.
+- PocketMine-MP Virion API 4.
+- `symfony/yaml` and `consolidation/comments` as the current library dependencies.
 
-Thanks to GitHub Copilot for helping me to make this virion!
+The repository does not currently include an example plugin or a dedicated runtime test suite. A consumer must verify file creation, nested reads/writes, malformed YAML handling, cache refresh behavior and data preservation for its own server lifecycle before adopting the library.
+
+## Development checks
+
+Install the locked Composer dependencies and run the repository's static-analysis configuration:
+
+```text
+composer install
+vendor/bin/phpstan analyse -c phpstan.neon.dist
+```
+
+The current checkout has no GitHub Actions workflow and no project-specific release automation. It also has no user-facing DevTools instructions; packaging belongs to the consuming plugin's build process. This documentation therefore does not copy a builder version that could become stale.
+
+## Project status and provenance
+
+The package metadata and source retain the KygekTeam/BetterConfig namespace and attribution. The README describes the current implementation rather than presenting the historical task list as completed work. There is no verified stable release or consumer compatibility claim in this repository.
+
+## License
+
+BetterConfig is licensed under the [GNU General Public License v3.0](LICENSE).
