@@ -26,7 +26,7 @@ BetterConfig is intended to be embedded into a PocketMine-MP plugin through the 
 - PocketMine-MP Virion API 4.
 - `symfony/yaml` and `consolidation/comments` as the current library dependencies.
 
-The repository does not currently include an example plugin or a dedicated runtime test suite. A consumer must verify file creation, nested reads/writes, malformed YAML handling, cache refresh behavior and data preservation for its own server lifecycle before adopting the library.
+The repository does not currently include an example plugin or a full consumer integration suite. The local smoke contract covers file creation, nested reads/writes, malformed YAML handling and cache refresh behavior; a consumer must still verify data preservation for its own server lifecycle before adopting the library.
 
 ## Development checks
 
@@ -35,7 +35,10 @@ Install the locked Composer dependencies and run the repository's static-analysi
 ```text
 composer install
 vendor/bin/phpstan analyse -c phpstan.neon.dist
+composer smoke
 ```
+
+The smoke command uses a temporary file and exercises persistence, nested access, cache refresh, selected-key operations and malformed-YAML recovery.
 
 The current checkout has no GitHub Actions workflow and no project-specific release automation. It also has no user-facing DevTools instructions; packaging belongs to the consuming plugin's build process. This documentation therefore does not copy a builder version that could become stale.
 

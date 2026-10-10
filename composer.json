@@ -28,5 +28,9 @@
     ],
     "config": {
         "vendor-dir": "src/KygekTeam/BetterConfig/libs"
+    },
+    "scripts": {
+        "analyse": "phpstan analyse -c phpstan.neon.dist",
+        "smoke": "@php tests/smoke.php"
     }
 }

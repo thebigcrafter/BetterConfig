@@ -136,17 +136,23 @@ class Config {
 
     public function removeNested(string $key, ?string $separator = null, ?bool $update = null) : bool {
         $keys = $this->splitKey($key, $separator);
+        $lastKey = array_pop($keys);
+        if ($lastKey === null) {
+            $this->changed = true;
+            return $this->checkUpdate($update);
+        }
         $contents = &$this->contentsCache;
         $unset = true;
         foreach ($keys as $key) {
-            if (!is_array($contents) || !isset($contents[$key])) {
+            if (!is_array($contents) || !array_key_exists($key, $contents)) {
                 $unset = false;
                 break;
             }
             $contents = &$contents[$key];
         }
-        // Prevents accidental removal of the whole array
-        if ($unset) unset($contents);
+        if ($unset && is_array($contents) && array_key_exists($lastKey, $contents)) {
+            unset($contents[$lastKey]);
+        }
         $this->changed = true;
         return $this->checkUpdate($update);
     }
