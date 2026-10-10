@@ -10,7 +10,10 @@
         "consolidation/comments": "^1.0",
         "symfony/yaml": "^6.0"
     },
-    "license": "GPL-3.0",
+    "require-dev": {
+        "phpstan/phpstan": "^1.12"
+    },
+    "license": "GPL-3.0-only",
     "autoload": {
         "psr-4": {
             "KygekTeam\\BetterConfig\\": "src/KygekTeam/BetterConfig/"

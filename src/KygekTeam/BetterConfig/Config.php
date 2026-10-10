@@ -26,12 +26,17 @@ class Config {
 
     protected bool $changed = false;
 
+    /** @var array<mixed> */
+    protected array $contentsCache;
+
+    /** @param array<mixed> $contentsCache */
     public function __construct(
         protected string $path,
-        protected array $contentsCache = [],
+        array $contentsCache = [],
         protected string $nestedSeparator = ".",
         protected bool $alwaysUpdated = false,
     ) {
+        $this->contentsCache = $contentsCache;
         // Create configuration file
         $this->save();
     }
@@ -40,21 +45,21 @@ class Config {
         return $this->path;
     }
 
-    public function setPath(string $path) {
+    public function setPath(string $path) : void {
         $this->path = $path;
     }
 
-    public function get(string $key, mixed $default = null, bool $cached = null) : mixed {
+    public function get(string $key, mixed $default = null, ?bool $cached = null) : mixed {
         $this->checkCached($cached);
         return $this->contentsCache[$key] ?? $default;
     }
 
-    public function getNested(string $key, mixed $default = null, string $separator = null, bool $cached = null) : mixed {
+    public function getNested(string $key, mixed $default = null, ?string $separator = null, ?bool $cached = null) : mixed {
         $this->checkCached($cached);
-        $keys = explode($separator ?? $this->getNestedSeparator(), $key);
+        $keys = $this->splitKey($key, $separator);
         $contents = $this->contentsCache;
         foreach ($keys as $key) {
-            if (!isset($contents[$key])) {
+            if (!is_array($contents) || !isset($contents[$key])) {
                 return $default;
             }
             $contents = $contents[$key];
@@ -62,7 +67,11 @@ class Config {
         return $contents;
     }
 
-    public function getContents(array $keys, mixed $default = null, bool $cached = null) : array {
+    /**
+     * @param array<mixed> $keys
+     * @return array<int|string, mixed>
+     */
+    public function getContents(array $keys, mixed $default = null, ?bool $cached = null) : array {
         $this->checkCached($cached);
         $result = [];
         foreach ($keys as $key) {
@@ -75,22 +84,23 @@ class Config {
         return $result;
     }
 
-    public function getAll(bool $cached = null) : array {
+    /** @return array<int|string, mixed> */
+    public function getAll(?bool $cached = null) : array {
         $this->checkCached($cached);
         return $this->contentsCache;
     }
 
-    public function set(string $key, mixed $value, bool $update = null) : bool {
+    public function set(string $key, mixed $value, ?bool $update = null) : bool {
         $this->contentsCache[$key] = $value;
         $this->changed = true;
         return $this->checkUpdate($update);
     }
 
-    public function setNested(string $key, mixed $value, string $separator = null, bool $update = null) : bool {
-        $keys = explode($separator ?? $this->getNestedSeparator(), $key);
+    public function setNested(string $key, mixed $value, ?string $separator = null, ?bool $update = null) : bool {
+        $keys = $this->splitKey($key, $separator);
         $contents = &$this->contentsCache;
         foreach ($keys as $key) {
-            if (!isset($contents[$key])) {
+            if (!isset($contents[$key]) || !is_array($contents[$key])) {
                 $contents[$key] = [];
             }
             $contents = &$contents[$key];
@@ -100,20 +110,22 @@ class Config {
         return $this->checkUpdate($update);
     }
 
-    public function setContents(array $contents, bool $update = null) : bool {
+    /** @param array<mixed> $contents */
+    public function setContents(array $contents, ?bool $update = null) : bool {
         // Merge arrays
         $this->contentsCache = array_replace_recursive($this->contentsCache, $contents);
         $this->changed = true;
         return $this->checkUpdate($update);
     }
 
-    public function setAll(array $contents, bool $update = null) : bool {
+    /** @param array<mixed> $contents */
+    public function setAll(array $contents, ?bool $update = null) : bool {
         $this->contentsCache = $contents;
         $this->changed = true;
         return $this->checkUpdate($update);
     }
 
-    public function remove(string $key, bool $update = null) : bool {
+    public function remove(string $key, ?bool $update = null) : bool {
         if (!isset($this->contentsCache[$key])) {
             return false;
         }
@@ -122,12 +134,12 @@ class Config {
         return $this->checkUpdate($update);
     }
 
-    public function removeNested(string $key, string $separator = null, bool $update = null) : bool {
-        $keys = explode($separator ?? $this->getNestedSeparator(), $key);
+    public function removeNested(string $key, ?string $separator = null, ?bool $update = null) : bool {
+        $keys = $this->splitKey($key, $separator);
         $contents = &$this->contentsCache;
         $unset = true;
         foreach ($keys as $key) {
-            if (!isset($contents[$key])) {
+            if (!is_array($contents) || !isset($contents[$key])) {
                 $unset = false;
                 break;
             }
@@ -139,7 +151,8 @@ class Config {
         return $this->checkUpdate($update);
     }
 
-    public function removeContents(array $keys, bool $update = null) : bool {
+    /** @param array<mixed> $keys */
+    public function removeContents(array $keys, ?bool $update = null) : bool {
         foreach ($keys as $key) {
             if (is_array($key)) {
                 $this->removeContents($key, $update);
@@ -151,21 +164,21 @@ class Config {
         return $this->checkUpdate($update);
     }
 
-    public function removeAll(bool $update = null) : bool {
+    public function removeAll(?bool $update = null) : bool {
         return $this->setAll([], $update);
     }
 
-    public function exists(string $key, bool $cached = null) : bool {
+    public function exists(string $key, ?bool $cached = null) : bool {
         $this->checkCached($cached);
         return isset($this->contentsCache[$key]);
     }
 
-    public function existsNested(string $key, string $separator = null, bool $cached = null) : bool {
+    public function existsNested(string $key, ?string $separator = null, ?bool $cached = null) : bool {
         $this->checkCached($cached);
-        $keys = explode($separator ?? $this->getNestedSeparator(), $key);
+        $keys = $this->splitKey($key, $separator);
         $contents = $this->contentsCache;
         foreach ($keys as $key) {
-            if (!isset($contents[$key])) {
+            if (!is_array($contents) || !isset($contents[$key])) {
                 return false;
             }
             $contents = $contents[$key];
@@ -173,7 +186,11 @@ class Config {
         return true;
     }
 
-    public function existsContents(array $keys, bool $cached = null) : array {
+    /**
+     * @param array<mixed> $keys
+     * @return array<int|string, bool>
+     */
+    public function existsContents(array $keys, ?bool $cached = null) : array {
         $this->checkCached($cached);
         $result = [];
         foreach ($keys as $key) {
@@ -186,7 +203,7 @@ class Config {
         return $result;
     }
 
-    public function isEmpty(bool $cached = null) : bool {
+    public function isEmpty(?bool $cached = null) : bool {
         $this->checkCached($cached);
         return empty($this->contentsCache);
     }
@@ -207,9 +224,13 @@ class Config {
 
     public function reload() : bool {
         try {
-            $this->contentsCache = Yaml::parseFile($this->path, Yaml::DUMP_EXCEPTION_ON_INVALID_TYPE);
+            $contents = Yaml::parseFile($this->path, Yaml::DUMP_EXCEPTION_ON_INVALID_TYPE);
+            if (!is_array($contents)) {
+                throw new \UnexpectedValueException("Configuration root must be an array");
+            }
+            $this->contentsCache = $contents;
             return true;
-        } catch (ParseException $e) {
+        } catch (ParseException | \UnexpectedValueException $e) {
             $this->contentsCache = [];
             return false;
         }
@@ -223,7 +244,16 @@ class Config {
         return $this->nestedSeparator;
     }
 
-    public function setNestedSeparator(string $nestedSeparator) {
+    /** @return list<string> */
+    private function splitKey(string $key, ?string $separator) : array {
+        $separator ??= $this->getNestedSeparator();
+        if ($separator === "") {
+            throw new \ValueError("Nested separator must not be empty");
+        }
+        return explode($separator, $key);
+    }
+
+    public function setNestedSeparator(string $nestedSeparator) : void {
         $this->nestedSeparator = $nestedSeparator;
     }
 
@@ -231,11 +261,11 @@ class Config {
         return $this->alwaysUpdated;
     }
 
-    public function setAlwaysUpdated(bool $alwaysUpdated) {
+    public function setAlwaysUpdated(bool $alwaysUpdated) : void {
         $this->alwaysUpdated = $alwaysUpdated;
     }
 
-    protected function checkCached(?bool $cached) {
+    protected function checkCached(?bool $cached) : void {
         if (!($cached ?? !$this->isAlwaysUpdated())) {
             $this->reload();
         }
