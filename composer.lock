@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "e1a461db8ae0b3997f53af6c9d3f7073",
+    "content-hash": "b40423339894bc42b0bb827bf687a1db",
     "packages": [
         {
             "name": "consolidation/comments",
@@ -361,7 +361,7 @@
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {
-        "php": "^8.0",
+        "php": "^8.1",
         "php-64bit": "*"
     },
     "platform-dev": {},

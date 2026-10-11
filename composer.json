@@ -5,7 +5,7 @@
     "homepage": "https://poggit.pmmp.io/ci/KygekTeam/BetterConfig/~",
     "keywords": ["yaml", "poggit", "virion", "pmmp-virion", "pm4", "betterconfig"],
     "require": {
-        "php": "^8.0",
+        "php": "^8.1",
         "php-64bit": "*",
         "consolidation/comments": "^1.0",
         "symfony/yaml": "^6.0"

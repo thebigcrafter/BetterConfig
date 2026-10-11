@@ -1,6 +1,6 @@
 # BetterConfig
 
-BetterConfig is a PHP library packaged as a PocketMine-MP Virion for reading and writing YAML configuration data. The current manifest targets PocketMine-MP Virion API 4 and PHP 8.0; it is not an API 5 plugin and does not provide a standalone server command or PHAR.
+BetterConfig is a PHP library packaged as a PocketMine-MP Virion for reading and writing YAML configuration data. The current manifest targets PocketMine-MP Virion API 4 and PHP 8.1 or newer; it is not an API 5 plugin and does not provide a standalone server command or PHAR.
 
 > BetterConfig is still under development and has not been validated as a production-ready configuration layer. Review the current source and test it in a disposable consumer plugin before using it for live server data.
 
@@ -22,7 +22,7 @@ The constructor accepts a file path, an optional initial cache, a nested-key sep
 
 BetterConfig is intended to be embedded into a PocketMine-MP plugin through the Virion build process. The compatibility contract is the one declared in `composer.json` and `virion.yml`:
 
-- PHP 8.0 or newer within the declared package constraints.
+- PHP 8.1 or newer within the declared package constraints.
 - PocketMine-MP Virion API 4.
 - `symfony/yaml` and `consolidation/comments` as the current library dependencies.
 
