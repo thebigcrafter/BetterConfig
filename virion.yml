@@ -11,6 +11,6 @@ name: BetterConfig
 version: 1.0.0-BETA
 author: KygekTeam
 api: 4.0.0
-php: [8.0]
+php: ["8.0"]
 antigen: KygekTeam\BetterConfig
 ...
