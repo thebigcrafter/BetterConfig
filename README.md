@@ -34,13 +34,13 @@ Install the locked Composer dependencies and run the repository's static-analysi
 
 ```text
 composer install
-vendor/bin/phpstan analyse -c phpstan.neon.dist
+composer analyse
 composer smoke
 ```
 
 The smoke command uses a temporary file and exercises persistence, nested access, cache refresh, selected-key operations and malformed-YAML recovery.
 
-The current checkout has no GitHub Actions workflow and no project-specific release automation. It also has no user-facing DevTools instructions; packaging belongs to the consuming plugin's build process. This documentation therefore does not copy a builder version that could become stale.
+The `Run tests and static analysis` GitHub Actions workflow runs the locked Composer install, smoke contract and maximum-level PHPStan analysis on pushes, pull requests and manual dispatches. The repository has no project-specific release automation. It also has no user-facing DevTools instructions; packaging belongs to the consuming plugin's build process. This documentation therefore does not copy a builder version that could become stale.
 
 ## Project status and provenance
 

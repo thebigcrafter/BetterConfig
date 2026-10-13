@@ -1,0 +1,32 @@
+name: Run tests and static analysis
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  quality:
+    name: Test and analyze PHP code
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@a37ce9120846195fa4ece8f58b268e6043cb2f26
+
+      - name: Set up PHP environment
+        uses: shivammathur/setup-php@eb7c497e18156a6bbabfef1d3a82760b9eda3962
+        with:
+          php-version: '8.2'
+          coverage: none
+
+      - name: Install locked Composer dependencies
+        run: composer install --prefer-dist --no-interaction --no-progress
+
+      - name: Run BetterConfig smoke test
+        run: composer smoke
+
+      - name: Run PHPStan at maximum level
+        run: composer analyse
