@@ -9,10 +9,10 @@
  * file that was distributed with this source code.
  */
 
-namespace Symfony\Component\Yaml;
+namespace KygekTeam\BetterConfig\Internal\Yaml;
 
-use Symfony\Component\Yaml\Exception\ParseException;
-use Symfony\Component\Yaml\Tag\TaggedValue;
+use KygekTeam\BetterConfig\Internal\Yaml\Exception\ParseException;
+use KygekTeam\BetterConfig\Internal\Yaml\Tag\TaggedValue;
 
 /**
  * Parser parses YAML strings to convert them to PHP arrays.
@@ -249,7 +249,7 @@ class Parser
                 && (!str_contains($values['key'], ' #') || \in_array($values['key'][0], ['"', "'"]))
             ) {
                 if (str_starts_with($values['key'], '!php/const:')) {
-                    trigger_deprecation('symfony/yaml', '6.2', 'YAML syntax for key "%s" is deprecated and replaced by "!php/const %s".', $values['key'], substr($values['key'], 11));
+                    @trigger_error(sprintf('YAML syntax for key "%s" is deprecated and replaced by "!php/const %s".', $values['key'], substr($values['key'], 11)), E_USER_DEPRECATED);
                 }
 
                 if ($context && 'sequence' == $context) {

@@ -9,11 +9,11 @@
  * file that was distributed with this source code.
  */
 
-namespace Symfony\Component\Yaml;
+namespace KygekTeam\BetterConfig\Internal\Yaml;
 
-use Symfony\Component\Yaml\Exception\DumpException;
-use Symfony\Component\Yaml\Exception\ParseException;
-use Symfony\Component\Yaml\Tag\TaggedValue;
+use KygekTeam\BetterConfig\Internal\Yaml\Exception\DumpException;
+use KygekTeam\BetterConfig\Internal\Yaml\Exception\ParseException;
+use KygekTeam\BetterConfig\Internal\Yaml\Tag\TaggedValue;
 
 /**
  * Inline implements a YAML parser/dumper for the YAML inline syntax.
@@ -128,7 +128,7 @@ class Inline
                     default => 'Y-m-d\TH:i:s.uP',
                 });
             case $value instanceof \UnitEnum:
-                return \sprintf('!php/const %s::%s', $value::class, $value->name);
+                return \sprintf('!php/const %s::%s', \get_class($value), $value->name);
             case \is_object($value):
                 if ($value instanceof TaggedValue) {
                     return '!'.$value->getTag().' '.self::dump($value->getValue(), $flags);

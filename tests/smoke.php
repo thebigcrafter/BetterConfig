@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-require_once dirname(__DIR__) . "/src/KygekTeam/BetterConfig/Config.php";
+require_once dirname(__DIR__) . "/vendor/autoload.php";
 
 use KygekTeam\BetterConfig\Config;
-use Symfony\Component\Yaml\Yaml;
+use KygekTeam\BetterConfig\Internal\Yaml\Yaml;
 
 function expect(bool $condition, string $message) : void
 {

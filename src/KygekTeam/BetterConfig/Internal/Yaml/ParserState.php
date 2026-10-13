@@ -9,10 +9,10 @@
  * file that was distributed with this source code.
  */
 
-namespace Symfony\Component\Yaml;
+namespace KygekTeam\BetterConfig\Internal\Yaml;
 
-use Symfony\Component\Yaml\Exception\ParseException;
-use Symfony\Component\Yaml\Tag\TaggedValue;
+use KygekTeam\BetterConfig\Internal\Yaml\Exception\ParseException;
+use KygekTeam\BetterConfig\Internal\Yaml\Tag\TaggedValue;
 
 /**
  * @internal
