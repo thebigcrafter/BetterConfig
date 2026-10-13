@@ -249,7 +249,7 @@ class Parser
                 && (!str_contains($values['key'], ' #') || \in_array($values['key'][0], ['"', "'"]))
             ) {
                 if (str_starts_with($values['key'], '!php/const:')) {
-                    @trigger_error(sprintf('YAML syntax for key "%s" is deprecated and replaced by "!php/const %s".', $values['key'], substr($values['key'], 11)), E_USER_DEPRECATED);
+                    @trigger_error(sprintf('Since symfony/yaml 6.2: YAML syntax for key "%s" is deprecated and replaced by "!php/const %s".', $values['key'], substr($values['key'], 11)), E_USER_DEPRECATED);
                 }
 
                 if ($context && 'sequence' == $context) {
