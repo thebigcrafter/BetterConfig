@@ -1,7 +1,7 @@
 <?php
 
 /*
- * A better YAML configuration file management virion for PocketMine-MP 4
+ * A better YAML configuration file management virion for PocketMine-MP 5
  * Copyright (C) 2022 KygekTeam
  *
  * This program is free software: you can redistribute it and/or modify

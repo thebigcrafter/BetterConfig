@@ -1,9 +1,9 @@
 {
     "name": "kygekteam/betterconfig",
-    "description": "A better YAML configuration file management virion for PocketMine-MP 4",
+    "description": "A better YAML configuration file management virion for PocketMine-MP 5",
     "type": "library",
     "homepage": "https://poggit.pmmp.io/ci/KygekTeam/BetterConfig/~",
-    "keywords": ["yaml", "poggit", "virion", "pmmp-virion", "pm4", "betterconfig"],
+    "keywords": ["yaml", "poggit", "virion", "pmmp-virion", "pm5", "betterconfig"],
     "require": {
         "php": "^8.1",
         "php-64bit": "*",

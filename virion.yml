@@ -1,5 +1,5 @@
 ---
-# A better YAML configuration file management virion for PocketMine-MP 4
+# A better YAML configuration file management virion for PocketMine-MP 5
 # Copyright (C) 2022 KygekTeam
 #
 # This program is free software: you can redistribute it and/or modify
@@ -8,9 +8,9 @@
 # (at your option) any later version.
 
 name: BetterConfig
-version: 1.0.0
+version: 2.0.0
 author: KygekTeam
-api: [4.0.0, 5.0.0]
+api: [5.0.0]
 php: ["8.1"]
 antigen: KygekTeam\BetterConfig
 ...
