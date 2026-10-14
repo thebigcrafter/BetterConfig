@@ -16,7 +16,7 @@ The public class is `KygekTeam\BetterConfig\Config`. It stores an array cache an
 - Saving/reloading YAML through `save()`, `reload()` and `update()`.
 - Controlling the nested-key separator and whether reads/writes refresh the file through `setNestedSeparator()` and `setAlwaysUpdated()`.
 
-The constructor accepts a file path, an optional initial cache, a nested-key separator (default `.`), and an `alwaysUpdated` flag. The implementation uses its bundled Composer autoloader and Symfony YAML classes under the configured library path.
+The constructor accepts a file path, an optional initial cache, a nested-key separator (default `.`), and an `alwaysUpdated` flag. The implementation uses its bundled Composer autoloader and namespaced YAML parser under `src/KygekTeam/BetterConfig/Internal/Yaml/`.
 
 ## Compatibility and integration
 
@@ -24,7 +24,7 @@ BetterConfig is intended to be embedded into a PocketMine-MP plugin through the 
 
 - PHP 8.1 or newer within the declared package constraints.
 - PocketMine-MP Virion API 4.
-- `symfony/yaml` and `consolidation/comments` as the current library dependencies.
+- The YAML parser is bundled under the library namespace; the current package has no runtime Composer dependency beyond PHP and `ext-ctype`.
 
 The repository does not currently include an example plugin or a full consumer integration suite. The local smoke contract covers file creation, nested reads/writes, malformed YAML handling and cache refresh behavior; a consumer must still verify data preservation for its own server lifecycle before adopting the library.
 
