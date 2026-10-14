@@ -8,9 +8,9 @@
 # (at your option) any later version.
 
 name: BetterConfig
-version: 1.0.0-BETA
+version: 1.0.0
 author: KygekTeam
-api: 4.0.0
+api: [4.0.0, 5.0.0]
 php: ["8.1"]
 antigen: KygekTeam\BetterConfig
 ...
